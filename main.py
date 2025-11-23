@@ -7,8 +7,9 @@ import sys
 UPSNAP_URL = os.getenv("UPSNAP_URL")
 UPSNAP_USERNAME = os.getenv("UPSNAP_USERNAME")
 UPSNAP_PASSWORD = os.getenv("UPSNAP_PASSWORD")
-# Default to 600 seconds (10 minutes) if not set
-DELAY = int(os.getenv("UPSNAP_DELAY", "600")) 
+
+# Default to 10 minutes if not set
+DELAY_MINUTES = int(os.getenv("UPSNAP_DELAY", "10")) 
 
 # specific check to ensure variables exist
 if not all([UPSNAP_URL, UPSNAP_USERNAME, UPSNAP_PASSWORD]):
@@ -52,9 +53,10 @@ def wake_device(token, device_id):
         print(f"Error sending WOL packet to device {device_id}: {e}")
 
 def main():
-    print(f"Script started. Waiting for {DELAY} seconds...")
-    # Health check depends on the container running, so we sleep first
-    time.sleep(DELAY) 
+    print(f"Script started. Waiting for {DELAY_MINUTES} minutes...")
+    
+    # Convert minutes to seconds for time.sleep()
+    time.sleep(DELAY_MINUTES * 60) 
 
     token = authenticate()
 
