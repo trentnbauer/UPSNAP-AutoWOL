@@ -16,6 +16,27 @@ if not all([UPSNAP_URL, UPSNAP_USERNAME, UPSNAP_PASSWORD]):
     print("⛔ Error: Missing required environment variables.", flush=True)
     sys.exit(1)
 
+def wait_for_server():
+    """
+    Loops until the UPSNAP_URL returns a valid response.
+    This prevents the script from crashing if UpSnap is still booting.
+    """
+    print(f"📡 Checking connection to {UPSNAP_URL}...", flush=True)
+    while True:
+        try:
+            # Timeout set to 5 seconds to prevent hanging
+            response = requests.get(UPSNAP_URL, timeout=5)
+            # We accept any success (2xx) or redirect (3xx) status
+            if response.status_code < 400:
+                print("✅ UpSnap server is reachable.", flush=True)
+                return True
+            else:
+                print(f"⚠️ UpSnap reachable but returned status {response.status_code}. Retrying in 5s...", flush=True)
+        except requests.RequestException:
+            print("⚠️ UpSnap server not reachable yet. Retrying in 5s...", flush=True)
+        
+        time.sleep(5)
+
 def authenticate():
     print("🔐 Authenticating...", flush=True)
     auth_url = f"{UPSNAP_URL}/api/collections/users/auth-with-password"
@@ -61,7 +82,11 @@ def main():
     else:
         print("🏃‍➡️ Script started. Running immediately...", flush=True)
 
-    # 2. Run the Logic
+    # 2. Connection Check (New)
+    # Ensure server is up before trying to auth
+    wait_for_server()
+
+    # 3. Run the Logic
     token = authenticate()
 
     if token:
@@ -75,7 +100,7 @@ def main():
                 
                 wake_device(token, dev_id, dev_name, dev_ip)
     
-    # 3. Idle Forever
+    # 4. Idle Forever
     print("💤 Task complete. Entering idle mode.", flush=True)
     while True:
         time.sleep(3600) 
