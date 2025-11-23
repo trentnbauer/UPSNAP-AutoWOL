@@ -13,11 +13,11 @@ DELAY_MINUTES = int(os.getenv("UPSNAP_DELAY", "0"))
 
 # Check for required variables
 if not all([UPSNAP_URL, UPSNAP_USERNAME, UPSNAP_PASSWORD]):
-    print("❌ Error: Missing required environment variables.", flush=True)
+    print("Error: Missing required environment variables.", flush=True)
     sys.exit(1)
 
 def authenticate():
-    print("🔐 Authenticating...", flush=True)
+    print("Authenticating...", flush=True)
     auth_url = f"{UPSNAP_URL}/api/collections/users/auth-with-password"
     auth_data = {"identity": UPSNAP_USERNAME, "password": UPSNAP_PASSWORD}
     try:
@@ -29,7 +29,7 @@ def authenticate():
         return None
 
 def get_devices(token):
-    print("📃 Getting list of devices...", flush=True)
+    print("Getting list of devices...", flush=True)
     headers = {'Authorization': f'Bearer {token}'}
     devices_url = f"{UPSNAP_URL}/api/collections/devices/records"
     try:
@@ -40,24 +40,26 @@ def get_devices(token):
         print(f"Error retrieving devices: {e}", flush=True)
         return None
 
-def wake_device(token, device_id):
-    print(f"📨 Sending WOL packet to device {device_id}...", flush=True)
+def wake_device(token, device_id, device_name, device_ip):
+    # Log Name and IP
+    print(f"Sending WOL packet to '{device_name}' ({device_ip})...", flush=True)
+    
     headers = {'Authorization': f'Bearer {token}'}
     wake_url = f"{UPSNAP_URL}/api/upsnap/wake/{device_id}"
     try:
         response = requests.get(wake_url, headers=headers)
         response.raise_for_status()
-        print(f"📬 WOL packet sent successfully to device {device_id}.", flush=True)
+        print(f"Successfully sent WOL to '{device_name}'.", flush=True)
     except requests.RequestException as e:
-        print(f"🧯 Error sending WOL packet to device {device_id}: {e}", flush=True)
+        print(f"Error sending WOL packet to '{device_name}': {e}", flush=True)
 
 def main():
     # 1. Initial Delay
     if DELAY_MINUTES > 0:
-        print(f"⌛ Script started. Waiting for {DELAY_MINUTES} minutes...", flush=True)
+        print(f"Script started. Waiting for {DELAY_MINUTES} minutes...", flush=True)
         time.sleep(DELAY_MINUTES * 60)
     else:
-        print("🏃‍➡️ Script started. Running immediately...", flush=True)
+        print("Script started. Running immediately...", flush=True)
 
     # 2. Run the Logic
     token = authenticate()
@@ -66,14 +68,17 @@ def main():
         devices = get_devices(token)
         if devices:
             for device in devices.get("items", []):
-                wake_device(token, device.get("id"))
+                # Extract details based on the keys you confirmed
+                dev_id = device.get("id")
+                dev_name = device.get("name", "Unknown")
+                dev_ip = device.get("ip", "No IP")
+                
+                wake_device(token, dev_id, dev_name, dev_ip)
     
     # 3. Idle Forever
-    # This keeps the container "Running" so Docker doesn't restart it.
-    # It will only run again if the container is manually restarted or the machine reboots.
-    print("🛏️ Task complete. Entering idle mode.", flush=True)
+    print("Task complete. Entering idle mode.", flush=True)
     while True:
-        time.sleep(3600) # Sleep for 1 hour blocks to consume 0 CPU
+        time.sleep(3600) 
 
 if __name__ == "__main__":
     main()
