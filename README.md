@@ -11,7 +11,7 @@ This script will wait x minutes, then send WOL packets to everything in UpSnap.
 
 | Variable | Required | Description | Example |
 | :--- | :---: | :--- | :--- |
-| `UPSNAP_URL` | **Yes** | The base URL of your UpSnap instance. Do not include a trailing slash. | `http://localhost:8090` |
+| `UPSNAP_URL` | **Yes** | The base URL of your UpSnap instance. Do not include a trailing slash. Defaults to `http://localhost:8090` | `http://localhost:8090` |
 | `UPSNAP_USERNAME` | **Yes** | The username used to log into UpSnap. | `admin` |
 | `UPSNAP_PASSWORD` | **Yes** | The password associated with the username. | `secure_password_123` |
 | `UPSNAP_DELAY` | No | The time to wait **(in minutes)** after the container starts before sending the Wake-on-LAN packets. Defaults to `0` if not set. | `5` |
