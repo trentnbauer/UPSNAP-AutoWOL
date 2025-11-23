@@ -2,7 +2,7 @@
 *Yay more AI slop!*
 
 # UPSNAP-AutoWOL
-I think this is a niche tool but I thought I would share it. ChatGPT wrote the script a couple of years ago for me and I've been running it as a CRON job on the machine hosting UpSnap. I've moved it to a docker container so its easier to replicate in the future
+I think this is a niche tool but I thought I would share it. ChatGPT wrote the script a year or 2 ago for me and I've been running it as a CRON job on the machine hosting UpSnap. I've moved it to a docker container so its easier to replicate in the future
 This script will wait x minutes, then send WOL packets to everything in UpSnap.
 
 ## Requirements
@@ -41,4 +41,5 @@ Waiting x minutes also allows the UPS battery to get some charge before the serv
 2. Attempts to authenticate
 3. Sends WOL packets to all devices
 4. Script goes to sleep
-The script is required to sleep to ensure it automatically runs on boot
+
+The script is required to sleep to ensure it automatically runs on boot next time.
