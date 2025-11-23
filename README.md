@@ -7,14 +7,15 @@ This script will wait x minutes, then send WOL packets to everything in UpSnap.
 ## Requirements
 * [UpSnap](https://github.com/seriousm4x/UpSnap) (included in my example compose file, but VERY basic. I recommend reading the UpSnap file and adding the AutoWOL container to that instead
 * An account set up in UpSnap
+  * Read and power permissions to all devices (you may need to update this when adding new devices in the future)
 * Devices set up in UpSnap
 
 ### Configuration Variables
 
 | Variable | Required | Description | Example |
 | :--- | :---: | :--- | :--- |
-| `UPSNAP_URL` | **Yes** | The base URL of your UpSnap instance. Do not include a trailing slash. Defaults to `http://localhost:8090` | `http://localhost:8090` |
-| `UPSNAP_USERNAME` | **Yes** | The username used to log into UpSnap. | `admin` |
+| `UPSNAP_URL` | **Yes** | The base URL of your UpSnap instance. Do not include a trailing slash. Defaults to `http://localhost:8090` | `http://upsnap:8090` |
+| `UPSNAP_USERNAME` | **Yes** | The username used to authenticate to UpSnap. | `admin` |
 | `UPSNAP_PASSWORD` | **Yes** | The password associated with the username. | `secure_password_123` |
 | `UPSNAP_DELAY` | No | The time to wait **(in minutes)** after the container starts before sending the Wake-on-LAN packets. Defaults to `0` if not set. | `5` |
 
