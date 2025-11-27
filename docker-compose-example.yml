@@ -14,7 +14,7 @@ services:
   autowol:
     image: ghcr.io/trentnbauer/upsnap-autowol:latest
     restart: always
-    network_mode: host # * May break "localhost" for the UpSnap URL variable
+    network_mode: host # * May break "localhost" for the UpSnap URL variable - you may need to set the variable to the machines IP/DNS name
     environment:
       - UPSNAP_URL=${UPSNAPURL:-http://localhost:8090} # *
       - UPSNAP_USERNAME=${USERNAME}
